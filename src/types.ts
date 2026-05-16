@@ -1,5 +1,7 @@
 export type View = 'dashboard' | 'inventory' | 'sales' | 'marketing' | 'settings' | 'agent-builder';
 
+export type MarketMasterTab = 'command-center' | 'execution-core' | 'schema-optimizer';
+
 export interface MetricCard {
   label: string;
   value: string;
@@ -35,4 +37,36 @@ export interface SaleRegion {
   volume: string;
   active: boolean;
   coords: { x: number; y: number };
+}
+
+export interface UploadState {
+  isProcessing: boolean;
+  progress: number;
+  isComplete: boolean;
+}
+
+export interface WorkflowNode {
+  id: string;
+  label: string;
+  status: 'active' | 'complete' | 'pending' | 'warning';
+}
+
+export interface CustomerProfile {
+  id: string;
+  name: string;
+  location: string;
+  lastPurchase: string;
+  totalSpent: string;
+  preferredCategory: string;
+  sent: boolean;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  supplier: string;
+  item: string;
+  eoq: number;
+  unitMargin: string;
+  expectedDelivery: string;
+  status: 'draft' | 'transmitting' | 'dispatched';
 }
