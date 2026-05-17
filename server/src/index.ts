@@ -13,6 +13,7 @@ import trendAnalyticsRoutes from './routes/trendAnalytics.routes';
 import contentGenerationRoutes from './routes/contentGeneration.routes';
 import agentsRoutes from './routes/agents.routes';
 import workflowRoutes from './routes/workflow.routes';
+import ibmBobRoutes from './routes/ibmBob.routes';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
@@ -37,9 +38,10 @@ app.use(rateLimiter);
 // Health check
 app.get('/health', (req: Request, res: Response) => {
   res.json({ 
-    status: 'healthy', 
+    status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'BrandPulse AI API'
+    service: 'MarketMaster AI — Powered by IBM Granite',
+    ibmGraniteModels: ['ibm/granite-3-8b-instruct', 'ibm/granite-3-2-8b-vision-instruct']
   });
 });
 
@@ -52,6 +54,7 @@ app.use('/api/trends', trendAnalyticsRoutes);
 app.use('/api/content', contentGenerationRoutes);
 app.use('/api/agents', agentsRoutes);
 app.use('/api/workflows', workflowRoutes);
+app.use('/api/ibm-bob', ibmBobRoutes);
 
 // Error handling
 app.use(errorHandler);
@@ -62,7 +65,7 @@ app.use((req: Request, res: Response) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 BrandPulse AI Server running on port ${PORT}`);
+  console.log(`🚀 MarketMaster AI Server running on port ${PORT} — Powered by IBM Granite`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 

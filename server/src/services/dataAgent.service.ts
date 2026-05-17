@@ -1,8 +1,5 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { watsonx, WatsonXService } from './watsonx.service';
 import { logger } from '../utils/logger';
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
 interface Transaction {
   customer: string;
@@ -19,6 +16,7 @@ interface ExtractionResult {
   confidence: 'high' | 'medium' | 'low';
   issues: string[];
   status: 'working' | 'completed' | 'error';
+  modelUsed: string;
 }
 
 export class DataAgentService {
@@ -43,134 +41,119 @@ export class DataAgentService {
       last_action: this.lastAction,
       thinking: this.thinking,
       icon: '📊',
-      description: 'Extracts data from handwritten documents and receipts'
+      description: 'Extracts transaction data from documents using IBM Granite Vision',
+      modelUsed: WatsonXService.MODELS.GRANITE_3_2_VISION,
     };
   }
 
-  async extractFromImage(imageBase64: string, imageType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg'): Promise<ExtractionResult> {
+  async extractFromImage(
+    imageBase64: string,
+    imageType: string = 'image/jpeg'
+  ): Promise<ExtractionResult> {
     try {
       this.currentStatus = 'working';
-      this.thinking = 'Analyzing document structure...';
-      logger.info('Data Agent: Starting document extraction');
+      this.thinking = 'IBM Granite Vision analyzing document structure...';
+      logger.info('Data Agent: Starting extraction with IBM Granite Vision');
 
-      const prompt = `You are a Data Agent - an autonomous AI that extracts business data from documents.
+      const prompt = `You are a Data Agent powered by IBM Granite Vision.
+Analyze this business document image and extract all transaction/sales data.
 
-**Your Task:**
-Analyze this image and extract sales/transaction data. Think step-by-step and show your reasoning.
+STEP-BY-STEP PROCESS:
+1. Identify document type (receipt, ledger, invoice, delivery note, etc.)
+2. Locate every transaction entry — both handwritten and printed
+3. Extract: customer name, product, price, date, quantity for each entry
+4. Validate data consistency (flag anomalies)
+5. Assess confidence
 
-**Step-by-Step Process:**
-1. Identify the document type (ledger, receipt, invoice, etc.)
-2. Locate all transaction entries
-3. Extract data for each transaction
-4. Validate the extracted data
-5. Flag any issues or anomalies
-
-**Return ONLY valid JSON in this exact format:**
+RESPOND WITH ONLY VALID JSON:
 {
-  "thinking": "Detailed step-by-step analysis of what you see and how you're processing it",
+  "thinking": "Detailed analysis of what you see, how you're reading it, any ambiguities",
   "transactions": [
     {
       "customer": "Customer Name",
       "product": "Product Name",
       "price": 2500,
-      "date": "2024-01-15",
+      "date": "2026-01-15",
       "quantity": 1
     }
   ],
-  "confidence": "high|medium|low",
-  "issues": ["List any data quality issues, unusual patterns, or validation concerns"]
-}
+  "confidence": "high",
+  "issues": ["List any data quality issues or anomalies found"]
+}`;
 
-**Important:**
-- Extract ALL visible transactions
-- Use YYYY-MM-DD format for dates
-- If date is unclear, estimate based on context
-- Flag suspicious data (unusual prices, unclear handwriting, etc.)
-- Be thorough in your thinking process`;
+      this.thinking = 'IBM Granite Vision reading document...';
 
-      const geminiResult = await model.generateContent([
-        {
-          text: prompt
-        },
-        {
-          inlineData: {
-            data: imageBase64,
-            mimeType: imageType
-          }
-        }
-      ]);
+      const rawText = await watsonx.chatWithVision(prompt, imageBase64, imageType as any, {
+        maxTokens: 2500,
+        temperature: 0.1,
+      });
 
       this.thinking = 'Parsing extracted data...';
 
-      const response = await geminiResult.response;
-      const text = response.text();
-
-      // Extract JSON from response (handle markdown code blocks)
-      let jsonText = text.trim();
-      if (jsonText.startsWith('```json')) {
-        jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?$/g, '');
-      } else if (jsonText.startsWith('```')) {
-        jsonText = jsonText.replace(/```\n?/g, '').replace(/```\n?$/g, '');
-      }
-
-      const parsedResult = JSON.parse(jsonText);
+      const parsed = this.parseResult(rawText);
 
       this.thinking = null;
       this.currentStatus = 'idle';
-      this.lastAction = `Processed document - Found ${parsedResult.transactions.length} transactions`;
+      this.lastAction = `Extracted ${parsed.transactions.length} transactions (confidence: ${parsed.confidence})`;
 
-      logger.info(`Data Agent: Extracted ${parsedResult.transactions.length} transactions with ${parsedResult.confidence} confidence`);
+      logger.info(`Data Agent: Extracted ${parsed.transactions.length} transactions`, {
+        confidence: parsed.confidence,
+      });
 
       return {
         agent: 'Data Agent',
-        thinking: parsedResult.thinking,
-        transactions: parsedResult.transactions,
-        confidence: parsedResult.confidence,
-        issues: parsedResult.issues || [],
-        status: 'completed'
+        thinking: parsed.thinking,
+        transactions: parsed.transactions,
+        confidence: parsed.confidence,
+        issues: parsed.issues,
+        status: 'completed',
+        modelUsed: WatsonXService.MODELS.GRANITE_3_2_VISION,
       };
-
-    } catch (error) {
+    } catch (error: any) {
       this.currentStatus = 'error';
       this.thinking = null;
       this.lastAction = 'Error processing document';
       logger.error('Data Agent error:', error);
-      
-      throw new Error(`Data Agent failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Data Agent (IBM Granite) failed: ${error.message}`);
+    }
+  }
+
+  private parseResult(text: string): {
+    thinking: string;
+    transactions: Transaction[];
+    confidence: 'high' | 'medium' | 'low';
+    issues: string[];
+  } {
+    let cleaned = text.trim();
+    if (cleaned.startsWith('```json')) {
+      cleaned = cleaned.replace(/^```json\n?/, '').replace(/\n?```$/, '');
+    } else if (cleaned.startsWith('```')) {
+      cleaned = cleaned.replace(/^```\n?/, '').replace(/\n?```$/, '');
+    }
+
+    try {
+      const parsed = JSON.parse(cleaned);
+      return {
+        thinking: parsed.thinking || '',
+        transactions: parsed.transactions || [],
+        confidence: parsed.confidence || 'medium',
+        issues: parsed.issues || [],
+      };
+    } catch {
+      logger.error('Data Agent: Failed to parse IBM Granite response');
+      return { thinking: 'Parse error', transactions: [], confidence: 'low', issues: ['Response parse failed'] };
     }
   }
 
   async validateTransaction(transaction: Transaction): Promise<{ valid: boolean; issues: string[] }> {
     const issues: string[] = [];
-
-    // Basic validation
-    if (!transaction.customer || transaction.customer.trim().length === 0) {
-      issues.push('Customer name is missing');
-    }
-
-    if (!transaction.product || transaction.product.trim().length === 0) {
-      issues.push('Product name is missing');
-    }
-
-    if (!transaction.price || transaction.price <= 0) {
-      issues.push('Invalid price');
-    }
-
-    if (transaction.price > 100000) {
-      issues.push('Price seems unusually high - please verify');
-    }
-
-    if (!transaction.date) {
-      issues.push('Date is missing');
-    }
-
-    return {
-      valid: issues.length === 0,
-      issues
-    };
+    if (!transaction.customer?.trim()) issues.push('Customer name is missing');
+    if (!transaction.product?.trim()) issues.push('Product name is missing');
+    if (!transaction.price || transaction.price <= 0) issues.push('Invalid price');
+    if (transaction.price > 100000) issues.push('Price seems unusually high — please verify');
+    if (!transaction.date) issues.push('Date is missing');
+    return { valid: issues.length === 0, issues };
   }
 }
 
 export const dataAgent = DataAgentService.getInstance();
-
-// Made with Bob

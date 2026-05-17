@@ -1,75 +1,42 @@
-# 🚀 BrandPulse AI - Multi-Tenant B2B Social Commerce Platform
+# MarketMaster AI — IBM Hackathon Submission
 
-**Transform physical inventory into viral social media campaigns with AI-powered automation**
-
-BrandPulse AI is a comprehensive multi-tenant platform that seamlessly orchestrates the journey from physical inventory ingestion to automated digital marketing. Vendors can onboard by selecting their industry niche, securely linking social media accounts, and leveraging cutting-edge AI to drive engagement and sales.
+> **Multi-agent B2B SaaS platform powered by IBM WatsonX Granite.**
+> Digitize physical inventory with a photo. Predict stockouts. Re-engage customers autonomously.
+> Built for 40 million SMEs in emerging markets.
 
 ---
 
-## 🌟 Key Features
+## 🚀 Live Demo
 
-### 📦 **Intelligent Inventory Management**
+```bash
+# 1. Install dependencies
+npm install
+cd server && npm install && cd ..
 
-#### 1. **AI Tag Scanning**
-- Upload product images
-- AI automatically generates:
-  - Descriptive tags for SEO
-  - Product categories and subcategories
-  - Compelling descriptions
-  - Pricing suggestions
-  - Target audience insights
+# 2. Configure environment
+cp .env.example .env
+cp server/.env.example server/.env
+# Edit server/.env and add ONE provider key (IBM WatsonX, Groq, or Gemini)
 
-#### 2. **IBM Bob Vision-to-Code**
-- Snap photos of physical documents:
-  - Delivery challans
-  - Handwritten inventory sheets
-  - Stock receipts
-- AI extracts data and generates SQL INSERT statements
-- Instant database updates
-- Supports handwritten and printed text
+# 3. Start
+npm run dev          # Frontend (localhost:3000)
+cd server && npm run dev   # Backend (localhost:3001)
+# Or use: start-hackathon.bat  /  ./start-hackathon.sh
+```
 
-### 📊 **Trend Analytics Engine**
+**Recommended:** Add `GROQ_API_KEY` (free, no credit card) for the fastest demo experience.
+**IBM Hackathon Optimized:** Add `WATSONX_API_KEY` + `WATSONX_PROJECT_ID` for full IBM Granite integration.
 
-- **Competitor Monitoring**: Continuously scrapes benchmark competitor profiles
-- **Viral Pattern Detection**: Identifies what content drives engagement
-- **Metadata Analysis**: Reverse-engineers:
-  - Caption structures
-  - Hashtag strategies
-  - Visual styles
-  - Posting times
-- **Market Intelligence**: Real-time insights into industry trends
+---
 
-### 🎨 **AI Content Generation**
+## 🎥 60-Second Demo Script
 
-- **Brand Voice Profiles**: Define unique tone, style, and personality
-- **Trend Integration**: Automatically incorporates viral patterns
-- **Multi-Platform Optimization**: Tailored content for:
-  - Instagram
-  - Facebook
-  - Twitter/X
-  - TikTok
-  - LinkedIn
-- **A/B Testing**: Generate multiple variations
-- **Smart Hashtags**: Mix of trending, niche, and branded tags
+1. **Command Center** — Watch 3 AI agents run autonomously (live metrics, activity charts).
+2. **IBM Bob Live** — Upload a photo of a delivery challan. AI extracts every item and writes SQL.
+3. **Schema & NL2SQL** — Type in plain English: *"Show me Karachi customers who haven't bought leather bags in 30 days."* IBM Granite writes the SQL instantly.
+4. **Execution Core** — One-click transmit AI-drafted purchase orders and launch WhatsApp re-engagement campaigns to at-risk customers.
 
-### 🤖 **Automated Social Media Posting**
-
-- **Smart Scheduling**: Posts at optimal engagement times
-- **Multi-Platform Publishing**: One-click posting to all connected accounts
-- **Human-in-the-Loop**: Optional approval workflow
-- **Engagement Tracking**: Real-time performance metrics
-- **Auto-Optimization**: Learns from post performance
-
-### 🔄 **n8n Workflow Automation**
-
-- Pre-built workflows for:
-  - Inventory synchronization
-  - Daily trend analysis
-  - Content generation pipelines
-  - Engagement tracking
-  - Stock alerts and reordering
-- Custom workflow builder
-- Webhook integrations
+📖 **Full judge walkthrough:** [`JUDGE_WALKTHROUGH.md`](JUDGE_WALKTHROUGH.md)
 
 ---
 
@@ -77,406 +44,77 @@ BrandPulse AI is a comprehensive multi-tenant platform that seamlessly orchestra
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     BRANDPULSE AI PLATFORM                   │
+│                     MARKETMASTER AI                          │
 ├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Frontend   │  │   Backend    │  │   Database   │      │
-│  │  React + TS  │◄─┤  Express API │◄─┤  PostgreSQL  │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│                            │                                  │
-│  ┌─────────────────────────┴──────────────────────────┐     │
-│  │              AI SERVICES LAYER                      │     │
-│  ├─────────────────────────────────────────────────────┤     │
-│  │  • IBM Bob (Vision-to-Code)                         │     │
-│  │  • AI Tag Scanner                                   │     │
-│  │  • Trend Analytics Engine                           │     │
-│  │  • Content Generation                               │     │
-│  │  • Social Media Posting                             │     │
-│  └─────────────────────────────────────────────────────┘     │
-│                            │                                  │
-│  ┌─────────────────────────┴──────────────────────────┐     │
-│  │           INTEGRATION LAYER                         │     │
-│  ├─────────────────────────────────────────────────────┤     │
-│  │  • n8n Workflows                                    │     │
-│  │  • Social Media APIs (Instagram, Facebook, etc.)    │     │
-│  │  • Gemini AI API                                    │     │
-│  │  • Redis Queue (Bull)                               │     │
-│  └─────────────────────────────────────────────────────┘     │
-│                                                               │
+│  Frontend (React 19 + Tailwind)                             │
+│     ↓                                                       │
+│  Backend API (Express + TypeScript + SQLite)                │
+│     ↓                                                       │
+│  AI Engine — Unified Provider                               │
+│     1. IBM WatsonX  (Granite 3-8b / Granite 3-2 Vision)    │
+│     2. Groq         (Llama 3.3 70B fallback)               │
+│     3. Gemini       (Google fallback)                      │
+│     ↓                                                       │
+│  Multi-Agent ReAct Loop                                     │
+│     • IBM Bob      → Vision-to-Code & NL2SQL               │
+│     • Stock Sentinel → Inventory optimization              │
+│     • Sales Scout  → Customer churn detection              │
+│     • Market Agent → Competitive intelligence              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🚀 Quick Start
+## 💎 Why It Wins
 
-### Prerequisites
-
-- Node.js 18+ and npm
-- PostgreSQL 14+
-- Redis (for job queues)
-- n8n instance (optional but recommended)
-- Social media API credentials
-
-### Installation
-
-#### 🪟 Windows Users
-**See [WINDOWS-SETUP.md](WINDOWS-SETUP.md) for detailed Windows setup guide**
-
-**Quick Start:**
-1. Double-click `install-dependencies.bat` to install all dependencies
-2. Copy `.env.example` to `.env` and configure
-3. Copy `server\.env.example` to `server\.env` and configure
-4. Double-click `start-dev.bat` to start servers
-
-#### 🐧 Linux/Mac Users
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-org/brandpulse-ai.git
-   cd brandpulse-ai
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   # Install frontend dependencies
-   npm install
-
-   # Install backend dependencies
-   cd server && npm install && cd ..
-   ```
-
-3. **Set up the database:**
-   ```bash
-   # Create PostgreSQL database
-   createdb brandpulse_ai
-
-   # Run migrations
-   psql brandpulse_ai < database/schema.sql
-   ```
-
-4. **Configure environment variables:**
-   ```bash
-   # Copy example env files
-   cp .env.example .env
-   cp server/.env.example server/.env
-
-   # Edit .env files with your credentials
-   ```
-
-5. **Start the development servers:**
-   ```bash
-   # Terminal 1: Frontend
-   npm run dev
-
-   # Terminal 2: Backend
-   cd server
-   npm run dev
-   ```
-
-6. **Access the application:**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001
-   - API Docs: http://localhost:3001/api-docs
+| Judge Criteria | How We Deliver |
+|---------------|----------------|
+| **IBM Tech Depth** | Native WatsonX Granite Vision + Instruct. ReAct tool-calling. Docker-ready for IBM Cloud. |
+| **Innovation** | First agentic platform that converts a photo of a paper document into live SQL + autonomous business actions. |
+| **Impact** | Targets 40M SMEs losing 30% revenue. Realistic PKR data. Urdu/English support. |
+| **Completeness** | Working backend, real DB, live AI coordination, Docker stack, n8n workflows, judge walkthrough. |
+| **Security** | Rate limiting, JWT auth, SQL injection prevention, AI SQL validation (blocks DROP/DELETE). |
 
 ---
 
-## 📋 Environment Variables
+## 📁 Key Files
 
-### Frontend (.env)
-```env
-VITE_API_URL=http://localhost:3001
-VITE_GEMINI_API_KEY=your_gemini_api_key
-```
-
-### Backend (server/.env)
-```env
-# Server
-PORT=3001
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
-
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/brandpulse_ai
-
-# AI Services
-GEMINI_API_KEY=your_gemini_api_key
-
-# Redis
-REDIS_URL=redis://localhost:6379
-
-# JWT
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=7d
-
-# Social Media APIs
-INSTAGRAM_CLIENT_ID=your_instagram_client_id
-INSTAGRAM_CLIENT_SECRET=your_instagram_client_secret
-FACEBOOK_APP_ID=your_facebook_app_id
-FACEBOOK_APP_SECRET=your_facebook_app_secret
-TWITTER_API_KEY=your_twitter_api_key
-TWITTER_API_SECRET=your_twitter_api_secret
-LINKEDIN_CLIENT_ID=your_linkedin_client_id
-LINKEDIN_CLIENT_SECRET=your_linkedin_client_secret
-
-# n8n
-N8N_WEBHOOK_URL=http://localhost:5678/webhook
-```
+| File | Purpose |
+|------|---------|
+| `server/src/services/watsonx.service.ts` | Unified AI provider (IBM WatsonX #1) |
+| `server/src/services/ibmBob.service.ts` | Vision-to-Code & NL2SQL engine |
+| `server/src/services/agentOrchestrator.service.ts` | Multi-agent ReAct loop with tool calling |
+| `server/src/services/database.service.ts` | Seeded SQLite with realistic PKR business data |
+| `src/components/MarketMasterApp.tsx` | Main hackathon demo UI |
+| `JUDGE_WALKTHROUGH.md` | 5-minute step-by-step demo script |
+| `PITCH.md` | Full hackathon pitch narrative |
 
 ---
 
-## 🎯 Usage Guide
+## 🛠️ Tech Stack
 
-### 1. Vendor Onboarding
-
-```typescript
-// Register new vendor
-POST /api/vendors/register
-{
-  "businessName": "Fashion Boutique",
-  "industryNiche": "fashion",
-  "email": "vendor@example.com",
-  "password": "secure_password"
-}
-```
-
-### 2. Connect Social Media Accounts
-
-```typescript
-// Initiate OAuth flow
-GET /api/social-media/connect/instagram
-
-// After OAuth callback
-POST /api/social-media/accounts
-{
-  "platform": "instagram",
-  "accountHandle": "@fashionboutique",
-  "accessToken": "oauth_token",
-  "autoPostEnabled": true,
-  "humanApprovalRequired": true
-}
-```
-
-### 3. Add Inventory via AI Tag Scan
-
-```typescript
-// Upload product image
-POST /api/inventory/scan
-{
-  "imageBase64": "data:image/jpeg;base64,...",
-  "tenantId": "uuid"
-}
-
-// Response includes auto-generated tags and metadata
-{
-  "success": true,
-  "product": {
-    "name": "Leather Handbag",
-    "category": "Fashion",
-    "tags": ["leather", "handbag", "luxury", "brown"],
-    "description": "Premium leather handbag...",
-    "suggestedPrice": 149.99
-  }
-}
-```
-
-### 4. Process Physical Documents with IBM Bob
-
-```typescript
-// Upload delivery challan photo
-POST /api/inventory/vision-to-code
-{
-  "imageBase64": "data:image/jpeg;base64,...",
-  "documentType": "challan",
-  "tenantId": "uuid"
-}
-
-// Response includes SQL statements and extracted data
-{
-  "success": true,
-  "sqlStatements": [
-    "INSERT INTO products (...) VALUES (...);"
-  ],
-  "extractedData": [
-    { "name": "Product 1", "quantity": 50, "sku": "SKU001" }
-  ],
-  "confidence": 0.95
-}
-```
-
-### 5. Analyze Competitor Trends
-
-```typescript
-// Add competitor profile
-POST /api/trends/competitors
-{
-  "platform": "instagram",
-  "accountHandle": "@competitor",
-  "industryNiche": "fashion"
-}
-
-// Run trend analysis
-POST /api/trends/analyze
-{
-  "tenantId": "uuid",
-  "industryNiche": "fashion"
-}
-
-// Get viral trends
-GET /api/trends/viral?niche=fashion
-```
-
-### 6. Generate AI Content
-
-```typescript
-// Generate post for product
-POST /api/content/generate
-{
-  "productId": "uuid",
-  "platform": "instagram",
-  "brandVoiceId": "uuid"
-}
-
-// Response includes AI-generated content
-{
-  "caption": "✨ New arrival alert! ...",
-  "hashtags": ["fashion", "style", "trending"],
-  "callToAction": "Shop now via link in bio!",
-  "variations": ["Alt caption 1", "Alt caption 2"],
-  "estimatedEngagement": "high"
-}
-```
-
-### 7. Schedule and Publish Posts
-
-```typescript
-// Schedule post
-POST /api/content/schedule
-{
-  "contentId": "uuid",
-  "socialAccountId": "uuid",
-  "scheduledTime": "2026-05-20T14:00:00Z"
-}
-
-// Approve post (if human approval required)
-POST /api/content/approve/:postId
-{
-  "approvedBy": "user_uuid",
-  "modifications": {
-    "caption": "Updated caption..."
-  }
-}
-```
+- **Frontend:** React 19, TypeScript, Tailwind CSS, Framer Motion, Recharts
+- **Backend:** Express.js, TypeScript, SQLite (better-sqlite3), JWT, rate-limit
+- **AI:** IBM WatsonX Granite, Groq Llama 3.3, Gemini 2.5 Flash
+- **DevOps:** Docker, Docker Compose, Nginx
+- **Automation:** n8n
 
 ---
 
-## 🔧 API Documentation
-
-Full API documentation available at: `/api-docs` (Swagger UI)
-
-### Key Endpoints
-
-#### Authentication
-- `POST /api/auth/register` - Register new vendor
-- `POST /api/auth/login` - Login
-- `POST /api/auth/refresh` - Refresh token
-
-#### Inventory
-- `GET /api/inventory/products` - List products
-- `POST /api/inventory/products` - Add product
-- `POST /api/inventory/scan` - AI Tag Scan
-- `POST /api/inventory/vision-to-code` - IBM Bob processing
-
-#### Trends
-- `GET /api/trends/viral` - Get viral trends
-- `POST /api/trends/analyze` - Run trend analysis
-- `POST /api/trends/competitors` - Add competitor
-
-#### Content
-- `POST /api/content/generate` - Generate content
-- `POST /api/content/schedule` - Schedule post
-- `GET /api/content/pending` - Get pending approvals
-- `POST /api/content/approve/:id` - Approve post
-
-#### Social Media
-- `GET /api/social-media/accounts` - List connected accounts
-- `POST /api/social-media/connect/:platform` - Connect account
-- `GET /api/social-media/analytics` - Get engagement metrics
-
----
-
-## 🧪 Testing
+## 🐳 Docker
 
 ```bash
-# Run all tests
-npm test
-
-# Run backend tests
-cd server && npm test
-
-# Run with coverage
-npm test -- --coverage
+docker-compose up --build
 ```
 
----
-
-## 📦 Deployment
-
-### Docker Deployment
-
-```bash
-# Build images
-docker-compose build
-
-# Start services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-```
-
-### Production Checklist
-
-- [ ] Set `NODE_ENV=production`
-- [ ] Configure production database
-- [ ] Set up Redis cluster
-- [ ] Configure CDN for media files
-- [ ] Set up SSL certificates
-- [ ] Configure rate limiting
-- [ ] Set up monitoring (Sentry, DataDog)
-- [ ] Configure backup strategy
-- [ ] Set up CI/CD pipeline
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Services: PostgreSQL (for n8n), Redis, Backend, Frontend, n8n, Nginx (production profile).
 
 ---
 
 ## 📄 License
 
-Apache-2.0 License - see [LICENSE](LICENSE) file for details.
+Apache-2.0
 
 ---
 
-## 🆘 Support
-
-- **Documentation**: https://docs.brandpulse.ai
-- **Community Forum**: https://community.brandpulse.ai
-- **Email**: support@brandpulse.ai
-- **GitHub Issues**: https://github.com/your-org/brandpulse-ai/issues
-
----
-
-## 🙏 Acknowledgments
-
-- Google Gemini AI for powerful AI capabilities
-- n8n for workflow automation
-- The open-source community
-
----
-
-**Built with ❤️ by the BrandPulse AI Team**
+**Built with IBM Bob. Powered by IBM Granite.**

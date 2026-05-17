@@ -1,6 +1,6 @@
 export type View = 'dashboard' | 'inventory' | 'sales' | 'marketing' | 'settings' | 'agent-builder';
 
-export type MarketMasterTab = 'command-center' | 'execution-core' | 'schema-optimizer';
+export type MarketMasterTab = 'command-center' | 'execution-core' | 'ibm-bob-live' | 'schema-optimizer';
 
 export interface MetricCard {
   label: string;

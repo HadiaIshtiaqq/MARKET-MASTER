@@ -96,3 +96,186 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--color-outline);
 }
+
+/* ============================================================================
+   PREMIUM GLASSMORPHISM & DYNAMIC ANIMATIONS
+   ============================================================================ */
+
+/* Floating drifting ambient backdrop glow blobs */
+.ambient-glow-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ambient-glow-1 {
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(168, 85, 247, 0.05) 55%, transparent 100%);
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: drift 35s ease-in-out infinite alternate;
+}
+
+.ambient-glow-2 {
+  position: absolute;
+  bottom: 10%;
+  right: 12%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 0%, rgba(59, 130, 246, 0.04) 65%, transparent 100%);
+  border-radius: 50%;
+  filter: blur(110px);
+  animation: drift-reverse 40s ease-in-out infinite alternate;
+}
+
+.ambient-glow-3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.06) 0%, rgba(99, 102, 241, 0.02) 60%, transparent 100%);
+  border-radius: 50%;
+  filter: blur(120px);
+  animation: drift-slow 50s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(120px, 70px) scale(1.15); }
+  100% { transform: translate(-60px, 140px) scale(0.9); }
+}
+
+@keyframes drift-reverse {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-100px, -80px) scale(0.85); }
+  100% { transform: translate(80px, 60px) scale(1.1); }
+}
+
+@keyframes drift-slow {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  50% { transform: translate(-45%, -55%) rotate(180deg) scale(1.05); }
+  100% { transform: translate(-52%, -48%) rotate(360deg) scale(0.95); }
+}
+
+/* Premium Card hover effects */
+.glow-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.glow-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glow-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(99, 102, 241, 0.15);
+}
+
+/* Shimmer Border Animation for AI-driven elements */
+@keyframes shimmer-border-glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.shimmer-active {
+  position: relative;
+}
+
+.shimmer-active::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981, #ec4899, #3b82f6);
+  background-size: 400% 400%;
+  animation: shimmer-border-glow 6s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Neon Text & Icon Glows */
+.glow-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+.glow-text-purple { text-shadow: 0 0 10px rgba(139, 92, 246, 0.4); }
+.glow-text-emerald { text-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+.glow-text-amber { text-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+.glow-text-red { text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+
+/* Timeline Connections */
+.timeline-connector {
+  position: relative;
+}
+
+.timeline-connector::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  bottom: 0;
+  left: 1.125rem;
+  width: 2px;
+  background: linear-gradient(to bottom, #10b981, #f59e0b 60%, rgba(71, 85, 105, 0.3) 100%);
+}
+
+.timeline-connector-last::before {
+  display: none;
+}
+
+/* Pulse agent scanner overlay */
+.agent-scan-radar {
+  position: relative;
+  overflow: hidden;
+}
+
+.agent-scan-radar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(99, 102, 241, 0.08) 50%, rgba(99, 102, 241, 0.15) 51%, rgba(99, 102, 241, 0.08) 52%, transparent 60%);
+  background-size: 100% 200%;
+  animation: radar-sweep 3s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes radar-sweep {
+  0% { background-position: 0% -100%; }
+  100% { background-position: 0% 100%; }
+}
+
+/* Chat bubble styling for WhatsApp sim */
+.chat-bubble-received {
+  position: relative;
+  background: #1f2937;
+  border-radius: 0.5rem 1rem 1rem 1rem;
+}
+
+.chat-bubble-sent {
+  position: relative;
+  background: #064e3b;
+  border-radius: 1rem 0.5rem 1rem 1rem;
+}
+

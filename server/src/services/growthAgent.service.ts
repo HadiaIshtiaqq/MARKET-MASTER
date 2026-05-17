@@ -1,8 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { watsonx, WatsonXService } from './watsonx.service';
+import { db } from './database.service';
 import { logger } from '../utils/logger';
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
 interface Customer {
   id: string;
@@ -55,40 +53,34 @@ export class GrowthAgentService {
       last_action: this.lastAction,
       thinking: this.thinking,
       icon: '🎯',
-      description: 'Detects churn and creates re-engagement campaigns',
-      pendingApprovals: this.pendingMessages.filter(m => m.status === 'pending').length
+      description: 'Detects churn and creates re-engagement campaigns via IBM Granite',
+      pendingApprovals: this.pendingMessages.filter((m) => m.status === 'pending').length,
+      modelUsed: WatsonXService.MODELS.GRANITE_3_8B,
     };
   }
 
   private scheduleChurnAnalysis() {
     setInterval(() => {
-      this.runChurnAnalysis().catch(err => {
-        logger.error('Growth Agent scheduled analysis failed:', err);
-      });
+      this.runChurnAnalysis().catch((err) => logger.error('Growth Agent scheduled analysis failed:', err));
     }, 60 * 60 * 1000);
 
     setTimeout(() => {
-      this.runChurnAnalysis().catch(err => {
-        logger.error('Growth Agent initial analysis failed:', err);
-      });
-    }, 5000);
+      this.runChurnAnalysis().catch((err) => logger.error('Growth Agent initial analysis failed:', err));
+    }, 8000);
   }
 
   async runChurnAnalysis(): Promise<ChurnAnalysis> {
     try {
       this.currentStatus = 'working';
-      this.thinking = 'Analyzing customer purchase patterns...';
-      logger.info('Growth Agent: Starting churn analysis');
+      this.thinking = 'IBM Granite analyzing customer purchase patterns...';
+      logger.info('Growth Agent: Starting churn analysis with IBM Granite');
 
       const customers = await this.getCustomerData();
-      this.thinking = 'Identifying at-risk customers...';
+      this.thinking = `IBM Granite identifying at-risk customers from ${customers.length} profiles...`;
 
-      const atRiskCustomers = customers.filter(customer => {
-        const daysSinceLastPurchase = this.getDaysSince(customer.lastPurchaseDate);
-        return daysSinceLastPurchase >= 30;
-      });
+      const atRiskCustomers = customers.filter((c) => this.getDaysSince(c.lastPurchaseDate) >= 30);
 
-      this.thinking = `Found ${atRiskCustomers.length} at-risk customers. Generating personalized messages...`;
+      this.thinking = `Found ${atRiskCustomers.length} at-risk. IBM Granite generating personalized messages...`;
 
       for (const customer of atRiskCustomers.slice(0, 5)) {
         const message = await this.generateReEngagementMessage(customer);
@@ -99,21 +91,18 @@ export class GrowthAgentService {
 
       this.thinking = null;
       this.currentStatus = 'idle';
-      this.lastAction = `Analyzed ${customers.length} customers - ${atRiskCustomers.length} at risk (${churnRate.toFixed(1)}% churn rate)`;
-
-      logger.info(`Growth Agent: Found ${atRiskCustomers.length} at-risk customers`);
+      this.lastAction = `Analyzed ${customers.length} customers — ${atRiskCustomers.length} at risk (${churnRate.toFixed(1)}% churn rate)`;
 
       return {
         atRiskCustomers,
         churnRate,
         recommendations: [
           `${atRiskCustomers.length} customers haven't purchased in 30+ days`,
-          `Churn rate is ${churnRate.toFixed(1)}% - ${churnRate > 25 ? 'HIGH RISK' : 'Normal'}`,
-          `${this.pendingMessages.length} re-engagement messages ready for approval`
-        ]
+          `Churn rate: ${churnRate.toFixed(1)}% — ${churnRate > 25 ? 'HIGH RISK' : 'Normal'}`,
+          `${this.pendingMessages.filter((m) => m.status === 'pending').length} IBM Granite messages awaiting approval`,
+        ],
       };
-
-    } catch (error) {
+    } catch (error: any) {
       this.currentStatus = 'error';
       this.thinking = null;
       this.lastAction = 'Error during churn analysis';
@@ -123,82 +112,73 @@ export class GrowthAgentService {
   }
 
   async generateReEngagementMessage(customer: Customer): Promise<CampaignMessage> {
-    try {
-      const prompt = `You are a Growth Agent creating personalized re-engagement messages for customers.
+    const systemPrompt = `You are a Growth Agent powered by IBM Granite.
+Create personalized WhatsApp re-engagement messages for Pakistani small business customers.
+Be warm, friendly, and reference their purchase history.
+Keep messages under 160 characters with a clear call-to-action.
 
-**Customer Profile:**
-- Name: ${customer.name}
-- Last Purchase: ${customer.lastPurchaseDate} (${this.getDaysSince(customer.lastPurchaseDate)} days ago)
-- Total Purchases: ${customer.totalPurchases}
-- Favorite Products: ${customer.favoriteProducts.join(', ')}
-- Total Spent: Rs. ${customer.totalSpent}
-
-**Your Task:**
-Create a warm, personalized WhatsApp message to re-engage this customer. 
-
-**Guidelines:**
-1. Be friendly and conversational (Pakistani context)
-2. Reference their past purchases
-3. Create urgency with a limited-time offer
-4. Keep it under 160 characters for WhatsApp
-5. Include a clear call-to-action
-
-**Return ONLY valid JSON:**
+Respond ONLY with valid JSON:
 {
   "message": "The WhatsApp message text",
   "reasoning": "Why this message will work for this customer"
 }`;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+    const userMessage = `Customer Profile:
+- Name: ${customer.name}
+- Last Purchase: ${customer.lastPurchaseDate} (${this.getDaysSince(customer.lastPurchaseDate)} days ago)
+- Total Purchases: ${customer.totalPurchases}
+- Favorite Products: ${customer.favoriteProducts.join(', ')}
+- Total Spent: Rs. ${customer.totalSpent.toLocaleString()}
 
-      let jsonText = text.trim();
-      if (jsonText.startsWith('```json')) {
-        jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?$/g, '');
-      } else if (jsonText.startsWith('```')) {
-        jsonText = jsonText.replace(/```\n?/g, '').replace(/```\n?$/g, '');
-      }
+Generate a personalized WhatsApp re-engagement message.`;
 
-      const parsed = JSON.parse(jsonText);
+    try {
+      const raw = await watsonx.simpleChat(systemPrompt, userMessage, {
+        model: WatsonXService.MODELS.GRANITE_3_8B,
+        maxTokens: 500,
+        temperature: 0.7,
+      });
+
+      let cleaned = raw.trim();
+      if (cleaned.startsWith('```json')) cleaned = cleaned.replace(/^```json\n?/, '').replace(/\n?```$/, '');
+      else if (cleaned.startsWith('```')) cleaned = cleaned.replace(/^```\n?/, '').replace(/\n?```$/, '');
+
+      const parsed = JSON.parse(cleaned);
 
       return {
-        id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
         customerId: customer.id,
         customerName: customer.name,
         message: parsed.message,
         channel: 'whatsapp',
         reasoning: parsed.reasoning,
         status: 'pending',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
-
-    } catch (error) {
-      logger.error('Error generating message:', error);
+    } catch (error: any) {
+      logger.error('Growth Agent: IBM Granite message generation failed', { error: error.message });
       return {
-        id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
         customerId: customer.id,
         customerName: customer.name,
-        message: `Hi ${customer.name}! We miss you! 🌟 Special 20% off on ${customer.favoriteProducts[0]} just for you. Valid 48hrs. Shop now!`,
+        message: `Hi ${customer.name.split(' ')[0]}! We miss you! ✨ Special 20% off on ${customer.favoriteProducts[0]} just for you. Valid 48hrs only!`,
         channel: 'whatsapp',
-        reasoning: 'Fallback message due to generation error',
+        reasoning: 'Fallback message — IBM Granite temporarily unavailable',
         status: 'pending',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
     }
   }
 
   getPendingMessages(): CampaignMessage[] {
-    return this.pendingMessages.filter(m => m.status === 'pending');
+    return this.pendingMessages.filter((m) => m.status === 'pending');
   }
 
   approveMessage(messageId: string): CampaignMessage | null {
-    const message = this.pendingMessages.find(m => m.id === messageId);
+    const message = this.pendingMessages.find((m) => m.id === messageId);
     if (message) {
       message.status = 'approved';
-      this.lastAction = `Approved message for ${message.customerName}`;
-      logger.info(`Growth Agent: Message approved for ${message.customerName}`);
-      
+      this.lastAction = `Approved IBM Granite message for ${message.customerName}`;
       setTimeout(() => {
         message.status = 'sent';
         this.lastAction = `Sent message to ${message.customerName}`;
@@ -209,63 +189,25 @@ Create a warm, personalized WhatsApp message to re-engage this customer.
 
   approveAllMessages(): number {
     const pending = this.getPendingMessages();
-    pending.forEach(msg => this.approveMessage(msg.id));
+    pending.forEach((msg) => this.approveMessage(msg.id));
     return pending.length;
   }
 
   private getDaysSince(dateString: string): number {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffTime = Math.abs(new Date().getTime() - new Date(dateString).getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 
   private async getCustomerData(): Promise<Customer[]> {
-    return [
-      {
-        id: 'cust_1',
-        name: 'Ahmed Khan',
-        lastPurchaseDate: '2024-11-15',
-        totalPurchases: 12,
-        favoriteProducts: ['Leather Bag', 'Wallet'],
-        totalSpent: 45000
-      },
-      {
-        id: 'cust_2',
-        name: 'Fatima Ali',
-        lastPurchaseDate: '2024-12-20',
-        totalPurchases: 8,
-        favoriteProducts: ['Handbag', 'Clutch'],
-        totalSpent: 32000
-      },
-      {
-        id: 'cust_3',
-        name: 'Hassan Raza',
-        lastPurchaseDate: '2024-10-10',
-        totalPurchases: 15,
-        favoriteProducts: ['Belt', 'Shoes'],
-        totalSpent: 67000
-      },
-      {
-        id: 'cust_4',
-        name: 'Ayesha Malik',
-        lastPurchaseDate: '2024-11-01',
-        totalPurchases: 6,
-        favoriteProducts: ['Scarf', 'Jewelry'],
-        totalSpent: 28000
-      },
-      {
-        id: 'cust_5',
-        name: 'Bilal Ahmed',
-        lastPurchaseDate: '2025-01-10',
-        totalPurchases: 20,
-        favoriteProducts: ['Watch', 'Sunglasses'],
-        totalSpent: 95000
-      }
-    ];
+    return db.getAllCustomers().map(c => ({
+      id: c.customer_id,
+      name: c.customer_name,
+      lastPurchaseDate: c.last_purchase_date,
+      totalPurchases: c.purchase_frequency,
+      favoriteProducts: [c.favorite_category],
+      totalSpent: c.total_lifetime_value,
+    }));
   }
 }
 
 export const growthAgent = GrowthAgentService.getInstance();
-
-// Made with Bob
