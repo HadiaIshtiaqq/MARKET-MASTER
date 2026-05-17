@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@400;500&display=swap');
 @import "tailwindcss";
 
-@theme {
+:root {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist", ui-monospace, SFMono-Regular, monospace;
 
@@ -40,10 +40,12 @@
   --radius-sm: 0.25rem;
 }
 
-@layer base {
-  body {
-    @apply bg-surface text-on-surface font-sans antialiased;
-  }
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .glass-panel {
@@ -74,7 +76,8 @@
 }
 
 .mono-data {
-  @apply font-mono text-sm;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
 }
 
 .custom-scrollbar::-webkit-scrollbar {

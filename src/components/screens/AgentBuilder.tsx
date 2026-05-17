@@ -1,268 +1,442 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Bot, 
-  Target, 
-  Brain, 
-  Zap, 
-  ShieldCheck, 
-  MessageCircle, 
-  Database, 
-  Rocket, 
-  Truck, 
-  Search,
-  Sparkles,
-  Terminal,
-  Paperclip,
-  Send,
-  ChevronDown,
-  LayoutGrid,
+  Sparkles, 
+  Zap,
+  Settings,
+  Play,
+  Pause,
+  Save,
+  Copy,
+  Trash2,
+  Plus,
+  Code,
+  Brain,
+  Target,
   Activity,
-  LineChart,
-  BarChart3
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  Sliders,
+  Database,
+  Workflow,
+  MessageSquare,
+  Eye,
+  Edit
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 
 export default function AgentBuilder() {
-  const [tone, setTone] = React.useState(50);
-  const [skillSearch, setSkillSearch] = React.useState('');
+  const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
 
-  const skillModules = [
-    { label: 'Inventory Intelligence', desc: 'Real-time stock monitoring', icon: LineChart, color: 'secondary' },
-    { label: 'Market NL2SQL', desc: 'Direct DB query execution', icon: BarChart3, color: 'primary' },
-    { label: 'WhatsApp Orchestrator', desc: 'Campaign messaging', icon: MessageCircle, color: 'tertiary' },
-    { label: 'Logistics Protocol', desc: 'Route optimization API', icon: Truck, color: 'primary' }
+  const agentTemplates = [
+    {
+      id: 1,
+      name: 'Sales Assistant',
+      description: 'Automated lead qualification and outreach',
+      icon: Target,
+      color: 'secondary',
+      capabilities: ['Lead Scoring', 'Email Campaigns', 'Follow-ups'],
+      status: 'active',
+      instances: 3
+    },
+    {
+      id: 2,
+      name: 'Inventory Monitor',
+      description: 'Real-time stock tracking and alerts',
+      icon: Database,
+      color: 'primary',
+      capabilities: ['Stock Alerts', 'Reorder Automation', 'Demand Forecasting'],
+      status: 'active',
+      instances: 2
+    },
+    {
+      id: 3,
+      name: 'Customer Support',
+      description: 'AI-powered customer service automation',
+      icon: MessageSquare,
+      color: 'tertiary',
+      capabilities: ['Ticket Routing', 'Auto-responses', 'Sentiment Analysis'],
+      status: 'draft',
+      instances: 0
+    },
+    {
+      id: 4,
+      name: 'Analytics Agent',
+      description: 'Data analysis and reporting automation',
+      icon: Activity,
+      color: 'primary',
+      capabilities: ['Report Generation', 'Trend Analysis', 'Anomaly Detection'],
+      status: 'active',
+      instances: 1
+    }
   ];
 
-  const filteredSkills = skillModules.filter(skill => 
-    skill.label.toLowerCase().includes(skillSearch.toLowerCase()) ||
-    skill.desc.toLowerCase().includes(skillSearch.toLowerCase())
-  );
-  
+  const deployedAgents = [
+    {
+      id: 1,
+      name: 'IBM Bob',
+      type: 'Logistics Optimizer',
+      status: 'running',
+      uptime: '14d 2h',
+      tasks: 1247,
+      efficiency: 98.5,
+      lastActivity: '2 min ago'
+    },
+    {
+      id: 2,
+      name: 'Sales Scout',
+      type: 'Lead Generation',
+      status: 'running',
+      uptime: '8d 14h',
+      tasks: 892,
+      efficiency: 97.2,
+      lastActivity: '5 min ago'
+    },
+    {
+      id: 3,
+      name: 'Stock Sentinel',
+      type: 'Inventory Monitor',
+      status: 'idle',
+      uptime: '21d 6h',
+      tasks: 456,
+      efficiency: 99.1,
+      lastActivity: '4h ago'
+    }
+  ];
+
+  const agentMetrics = [
+    { label: 'Total Agents', value: '12', icon: Bot, color: 'primary' },
+    { label: 'Active Now', value: '8', icon: Activity, color: 'secondary' },
+    { label: 'Tasks Today', value: '2,847', icon: CheckCircle2, color: 'tertiary' },
+    { label: 'Avg Efficiency', value: '98.3%', icon: Zap, color: 'primary' }
+  ];
+
   return (
-    <div className="max-w-6xl mx-auto flex flex-col gap-bento-gap pb-48">
-      <header className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-8 max-w-[1600px] mx-auto">
+      {/* Header */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-end justify-between"
+      >
         <div>
-           <h1 className="text-3xl font-bold tracking-tight mb-2">Define New Agent Persona</h1>
-           <p className="text-on-surface-variant font-medium">Configure logic engines and behavioral boundaries for autonomous agents.</p>
+          <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-primary via-secondary to-tertiary bg-clip-text text-transparent">
+            AI Agent Studio
+          </h1>
+          <p className="text-on-surface-variant flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+            Design, deploy, and manage autonomous AI agents
+          </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 scale-90">
-           <Activity className="w-3 h-3 text-secondary ai-pulse" />
-           <span className="text-[10px] font-black uppercase tracking-widest text-secondary">Neural Link Ready</span>
-        </div>
-      </header>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-gradient-to-r from-primary to-secondary text-on-primary px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:shadow-lg hover:shadow-primary/20 transition-all"
+        >
+          <Plus className="w-5 h-5" />
+          Create New Agent
+        </motion.button>
+      </motion.div>
 
-      <div className="grid grid-cols-12 gap-bento-gap">
-        {/* Left Column: Persona Configuration */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col gap-bento-gap">
-          <section className="glass-panel rounded-2xl p-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none">
-              <Bot className="w-64 h-64 text-primary" />
-            </div>
-            
-            <div className="flex items-center gap-3 mb-10 relative z-10">
-              <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
-                <Target className="w-6 h-6 text-primary" />
-              </div>
-              <h2 className="text-xl font-bold tracking-tight">Core Identity</h2>
-            </div>
-
-            <div className="space-y-8 relative z-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-[0.15em] text-on-surface-variant ml-1">Agent Name</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. Logistics Optimizer" 
-                    className="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-5 py-4 text-sm font-medium focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all placeholder:text-on-surface-variant/30"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-[0.15em] text-on-surface-variant ml-1">Logic Engine</label>
-                  <div className="relative group">
-                    <select className="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-5 py-4 text-sm font-medium focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all appearance-none cursor-pointer">
-                      <option>Gemini 2.5 Pro (Recommended)</option>
-                      <option>Gemini 2.5 Flash (Ultra-Fast)</option>
-                      <option>GPT-4o (Legacy Support)</option>
-                    </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant pointer-events-none group-hover:text-primary transition-colors" />
+      {/* Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {agentMetrics.map((m, i) => {
+          const Icon = m.icon;
+          return (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="bg-surface-container p-6 rounded-2xl border border-outline-variant/30 hover:border-primary/40 transition-all relative overflow-hidden group"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+              
+              <div className="relative">
+                <div className="flex items-start justify-between mb-4">
+                  <div className={`p-3 rounded-xl bg-${m.color}/10`}>
+                    <Icon className={`w-6 h-6 text-${m.color}`} />
                   </div>
                 </div>
+                <p className="text-on-surface-variant text-xs uppercase tracking-wider font-bold mb-2">{m.label}</p>
+                <h3 className="text-3xl font-bold font-mono">{m.value}</h3>
               </div>
-
-              <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-[0.15em] text-on-surface-variant ml-1">Behavioral Directive & Boundary</label>
-                <textarea 
-                  rows={4}
-                  placeholder="Define the agent's specific duties, boundaries, and organizational context..."
-                  className="w-full bg-surface-container border border-outline-variant/30 rounded-2xl px-6 py-5 text-sm font-medium focus:border-secondary focus:ring-4 focus:ring-secondary/10 outline-none transition-all resize-none shadow-inner placeholder:text-on-surface-variant/30"
-                ></textarea>
-              </div>
-            </div>
-          </section>
-
-          {/* Nuance Section */}
-          <section className="glass-panel rounded-2xl p-8">
-            <div className="flex items-center gap-3 mb-10">
-              <div className="p-2.5 bg-secondary/10 rounded-xl border border-secondary/20">
-                <Brain className="w-6 h-6 text-secondary" />
-              </div>
-              <h2 className="text-xl font-bold tracking-tight">Cognitive Nuance</h2>
-            </div>
-            
-            <div className="space-y-12 py-4">
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <label className="text-[10px] font-black uppercase tracking-[0.15em] text-on-surface-variant">Persona Personality</label>
-                  <span className="bg-secondary/10 text-secondary px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-secondary/20 shadow-sm">
-                    {tone < 50 ? 'STRICTLY ANALYTICAL' : tone === 50 ? 'BALANCED' : 'CONVERSATIONAL'}
-                  </span>
-                </div>
-                <div className="relative h-2 bg-surface-container-highest/50 rounded-full group/slider">
-                  <div 
-                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-secondary to-tertiary rounded-full shadow-[0_0_15px_rgba(78,222,163,0.3)]"
-                    style={{ width: `${tone}%` }}
-                  ></div>
-                  <input 
-                    type="range" 
-                    min="0" max="100" 
-                    value={tone}
-                    onChange={(e) => setTone(Number(e.target.value))}
-                    className="absolute inset-x-0 -top-2 h-6 opacity-0 cursor-pointer z-10"
-                  />
-                  <div 
-                    className="absolute top-1/2 -translate-y-1/2 h-7 w-7 bg-on-background rounded-full border-[6px] border-surface shadow-[0_4px_12px_rgba(0,0,0,0.5)] transition-transform group-hover/slider:scale-125"
-                    style={{ left: `calc(${tone}% - 14px)` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-4 text-[9px] font-black uppercase tracking-[0.15em] text-on-surface-variant">
-                  <span>Logic Processor</span>
-                  <span>Humanoid Empathy</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div className="p-5 rounded-2xl bg-surface-container border border-outline-variant/20 flex items-center gap-4 group hover:border-primary/40 transition-all cursor-pointer">
-                  <div className="p-3 bg-tertiary/10 rounded-xl text-tertiary group-hover:scale-110 transition-transform">
-                    <Zap className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-on-surface mb-0.5">Response Latency</p>
-                    <p className="text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Fixed: &lt;200ms</p>
-                  </div>
-                </div>
-                <div className="p-5 rounded-2xl bg-surface-container border border-outline-variant/20 flex items-center gap-4 group hover:border-secondary/40 transition-all cursor-pointer">
-                  <div className="p-3 bg-secondary/10 rounded-xl text-secondary group-hover:scale-110 transition-transform">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-on-surface mb-0.5">Entity Guardrails</p>
-                    <p className="text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Compliant Tier-04</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* Right Column: Skill Modules */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col gap-bento-gap">
-          <section className="glass-panel rounded-2xl p-8 flex-1 flex flex-col relative overflow-hidden">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
-                  <LayoutGrid className="w-6 h-6 text-primary" />
-                </div>
-                <h2 className="text-xl font-bold tracking-tight">Skill Modules</h2>
-              </div>
-              <span className="bg-surface-container-highest/80 text-on-surface-variant text-[10px] font-bold px-3 py-1.5 rounded-full border border-outline-variant/20 uppercase tracking-widest">{filteredSkills.length} Ready</span>
-            </div>
-
-            <div className="relative mb-6">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
-              <input 
-                type="text" 
-                placeholder="Search skills..." 
-                value={skillSearch}
-                onChange={(e) => setSkillSearch(e.target.value)}
-                className="w-full bg-surface-container border border-outline-variant/30 rounded-xl pl-10 pr-4 py-3 text-xs focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all placeholder:text-on-surface-variant/30"
-              />
-            </div>
-
-            <div className="space-y-3 flex-1 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
-              {filteredSkills.length > 0 ? (
-                filteredSkills.map((skill, i) => {
-                  const Icon = skill.icon;
-                  return (
-                    <div key={i} className="flex items-center justify-between p-5 rounded-2xl bg-surface-container border border-outline-variant/10 hover:border-secondary/40 transition-all cursor-pointer group">
-                      <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-xl border border-outline-variant/20 group-hover:scale-105 transition-transform ${
-                          skill.color === 'secondary' ? 'bg-secondary/10 text-secondary' : 
-                          skill.color === 'primary' ? 'bg-primary/10 text-primary' : 
-                          'bg-tertiary/10 text-tertiary'
-                        }`}>
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">{skill.label}</p>
-                          <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest leading-none mt-1">{skill.desc}</p>
-                        </div>
-                      </div>
-                      <div className="relative inline-flex h-5 w-10 items-center rounded-full bg-surface-container-highest p-1 group-hover:bg-secondary/10 transition-colors">
-                        <div className={`h-3 w-3 rounded-full bg-secondary shadow-lg shadow-secondary/40 transition-transform ${skill.label.includes('Intelligence') || skill.label.includes('NL2SQL') ? 'translate-x-5' : 'translate-x-0'}`} />
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-on-surface-variant opacity-50">
-                  <Search className="w-8 h-8 mb-4" />
-                  <p className="text-xs font-bold uppercase tracking-widest">No skills found</p>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-12 pt-8 border-t border-outline-variant/20 relative z-10">
-              <button className="w-full bg-primary hover:bg-primary-container text-on-primary font-black py-4 rounded-2xl flex items-center justify-center gap-3 shadow-[0_12px_24px_-8px_rgba(192,193,255,0.4)] active:scale-95 transition-all uppercase text-[11px] tracking-[0.25em]">
-                <Rocket className="w-4 h-4" />
-                Initialize & Deploy Agent
-              </button>
-              <p className="text-center text-[9px] text-on-surface-variant font-bold uppercase tracking-widest mt-6">Estimated Resource Cost: $42.50 / Month / Node</p>
-            </div>
-          </section>
-        </div>
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* Sandbox Overlay */}
-      <div className="fixed bottom-0 left-64 right-0 h-44 bg-surface/60 backdrop-blur-3xl border-t border-outline-variant/30 z-50 p-6 flex flex-col gap-4 shadow-[0_-16px_32px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center justify-between px-2">
-          <div className="flex items-center gap-3">
-            <div className="w-2.5 h-2.5 rounded-full bg-secondary ai-pulse"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Neural Testing Sandbox</span>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Agent Templates */}
+        <div className="xl:col-span-2 space-y-6">
+          <h2 className="text-2xl font-bold">Agent Templates</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {agentTemplates.map((template, i) => {
+              const Icon = template.icon;
+              return (
+                <motion.div 
+                  key={template.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4 + i * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-surface-container-high p-6 rounded-2xl border border-outline-variant/20 hover:border-primary/40 transition-all cursor-pointer"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`p-4 rounded-xl bg-${template.color}/10`}>
+                      <Icon className={`w-8 h-8 text-${template.color}`} />
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                      template.status === 'active' ? 'text-secondary bg-secondary/10' : 'text-on-surface-variant bg-surface-container'
+                    }`}>
+                      {template.status}
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-lg font-bold mb-2">{template.name}</h3>
+                  <p className="text-sm text-on-surface-variant mb-4">{template.description}</p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {template.capabilities.map((cap, idx) => (
+                      <span key={idx} className="px-2 py-1 bg-surface-container rounded-lg text-[10px] font-bold">
+                        {cap}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-outline-variant/20">
+                    <span className="text-xs text-on-surface-variant">
+                      {template.instances} active instance{template.instances !== 1 ? 's' : ''}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-2 hover:bg-surface-container rounded-lg transition-colors"
+                      >
+                        <Eye className="w-4 h-4 text-on-surface-variant" />
+                      </motion.button>
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-2 hover:bg-surface-container rounded-lg transition-colors"
+                      >
+                        <Copy className="w-4 h-4 text-on-surface-variant" />
+                      </motion.button>
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-2 bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors"
+                      >
+                        <Play className="w-4 h-4 text-primary" />
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 group cursor-pointer">
-              <Terminal className="w-3.5 h-3.5 text-on-surface-variant group-hover:text-primary transition-colors" />
-              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Log Stream: Active</span>
-            </div>
-            <button className="text-primary text-[10px] font-black uppercase tracking-widest hover:underline decoration-2 underline-offset-4">Reset Neural Memory</button>
+
+          {/* Deployed Agents */}
+          <div className="space-y-4 mt-8">
+            <h2 className="text-2xl font-bold">Deployed Agents</h2>
+            {deployedAgents.map((agent, i) => (
+              <motion.div 
+                key={agent.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 + i * 0.1 }}
+                className="bg-surface-container-high/50 p-6 rounded-2xl border border-outline-variant/20 hover:border-secondary/40 transition-all"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center border border-outline-variant/30">
+                      <Bot className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="text-lg font-bold">{agent.name}</h3>
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          agent.status === 'running' ? 'text-secondary bg-secondary/10' : 'text-on-surface-variant bg-surface-container'
+                        }`}>
+                          {agent.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-on-surface-variant">{agent.type}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-6 mr-6">
+                    <div className="text-center">
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-1">Uptime</p>
+                      <p className="text-sm font-bold font-mono">{agent.uptime}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-1">Tasks</p>
+                      <p className="text-sm font-bold font-mono">{agent.tasks}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-1">Efficiency</p>
+                      <p className="text-sm font-bold font-mono text-secondary">{agent.efficiency}%</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant mb-1">Last Active</p>
+                      <p className="text-sm font-bold">{agent.lastActivity}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <motion.button 
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-2 hover:bg-surface-container rounded-lg transition-colors"
+                    >
+                      <Settings className="w-5 h-5 text-on-surface-variant" />
+                    </motion.button>
+                    <motion.button 
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-2 hover:bg-surface-container rounded-lg transition-colors"
+                    >
+                      {agent.status === 'running' ? (
+                        <Pause className="w-5 h-5 text-tertiary" />
+                      ) : (
+                        <Play className="w-5 h-5 text-secondary" />
+                      )}
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
 
-        <div className="flex-1 bg-surface-container-highest/30 rounded-2xl border border-outline-variant/20 p-3 flex items-center gap-4 group focus-within:border-primary/50 transition-all shadow-inner">
-           <div className="flex-1 px-6 text-on-surface-variant font-medium text-sm italic group-focus-within:text-on-surface transition-colors">
-              Type a diagnostic prompt to evaluate the agent's logic stream...
-           </div>
-           <div className="flex items-center gap-2">
-              <button className="p-3 text-on-surface-variant hover:text-on-surface transition-colors rounded-xl hover:bg-surface-variant/30">
-                <Paperclip className="w-5 h-5" />
-              </button>
-              <button className="h-12 px-8 bg-primary text-on-primary rounded-xl flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">
-                <Send className="w-4 h-4" />
-                Evaluate Payload
-              </button>
-           </div>
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Quick Start */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="bg-surface-container p-6 rounded-2xl border border-outline-variant/30 relative overflow-hidden"
+          >
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-6">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <h3 className="text-lg font-bold">Quick Start</h3>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { label: 'Deploy Template', icon: Play },
+                  { label: 'Custom Agent', icon: Code },
+                  { label: 'Import Config', icon: Database },
+                  { label: 'View Docs', icon: Brain }
+                ].map((action, i) => {
+                  const Icon = action.icon;
+                  return (
+                    <motion.button 
+                      key={i}
+                      whileHover={{ x: 5 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full flex items-center gap-3 p-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest transition-all group"
+                    >
+                      <Icon className="w-5 h-5 text-primary" />
+                      <span className="font-bold text-sm">{action.label}</span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Agent Capabilities */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="bg-surface-container p-6 rounded-2xl border border-outline-variant/30"
+          >
+            <h3 className="text-lg font-bold mb-6">Available Capabilities</h3>
+            <div className="space-y-3">
+              {[
+                { name: 'Natural Language Processing', enabled: true },
+                { name: 'Computer Vision', enabled: true },
+                { name: 'Predictive Analytics', enabled: true },
+                { name: 'Workflow Automation', enabled: true },
+                { name: 'API Integration', enabled: true },
+                { name: 'Real-time Monitoring', enabled: true }
+              ].map((capability, i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+                  <span className="text-sm">{capability.name}</span>
+                  {capability.enabled && (
+                    <CheckCircle2 className="w-4 h-4 text-secondary" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* System Status */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="bg-surface-container p-6 rounded-2xl border border-outline-variant/30"
+          >
+            <h3 className="text-lg font-bold mb-6">System Status</h3>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-xs mb-2">
+                  <span className="text-on-surface-variant">API Quota</span>
+                  <span className="font-bold font-mono">78%</span>
+                </div>
+                <div className="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: '78%' }}
+                    transition={{ duration: 1, delay: 1 }}
+                    className="bg-primary h-full"
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-xs mb-2">
+                  <span className="text-on-surface-variant">Compute Resources</span>
+                  <span className="font-bold font-mono">42%</span>
+                </div>
+                <div className="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: '42%' }}
+                    transition={{ duration: 1, delay: 1.1 }}
+                    className="bg-secondary h-full"
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-xs mb-2">
+                  <span className="text-on-surface-variant">Storage Used</span>
+                  <span className="font-bold font-mono">34%</span>
+                </div>
+                <div className="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: '34%' }}
+                    transition={{ duration: 1, delay: 1.2 }}
+                    className="bg-tertiary h-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
   );
 }
+
+// Made with Bob
