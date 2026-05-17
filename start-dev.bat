@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo   MarketMaster AI - Starting Development Servers
+echo   BrandPulse AI - Starting Development Servers
 echo ========================================
 echo.
 
@@ -14,12 +14,12 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo Starting Backend Server...
-start "MarketMaster Backend" cmd /k "cd server && npm run dev"
+start "BrandPulse Backend" cmd /k "cd server && npm run dev"
 
 timeout /t 3 /nobreak >nul
 
 echo Starting Frontend Server...
-start "MarketMaster Frontend" cmd /k "npm run dev"
+start "BrandPulse Frontend" cmd /k "npm run dev"
 
 echo.
 echo ========================================

@@ -4,20 +4,20 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
-    container_name: marketmaster-postgres
+    container_name: brandpulse-postgres
     environment:
-      POSTGRES_DB: marketmaster_ai
-      POSTGRES_USER: marketmaster
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-marketmaster_secure_password}
+      POSTGRES_DB: brandpulse_ai
+      POSTGRES_USER: brandpulse
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-brandpulse_secure_password}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
-      - marketmaster-network
+      - brandpulse-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U marketmaster"]
+      test: ["CMD-SHELL", "pg_isready -U brandpulse"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,13 +25,13 @@ services:
   # Redis for job queues and caching
   redis:
     image: redis:7-alpine
-    container_name: marketmaster-redis
+    container_name: brandpulse-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - marketmaster-network
+      - brandpulse-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -43,11 +43,11 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    container_name: marketmaster-backend
+    container_name: brandpulse-backend
     environment:
       NODE_ENV: production
       PORT: 3001
-      DATABASE_URL: postgresql://marketmaster:${DB_PASSWORD:-marketmaster_secure_password}@postgres:5432/marketmaster_ai
+      DATABASE_URL: postgresql://brandpulse:${DB_PASSWORD:-brandpulse_secure_password}@postgres:5432/brandpulse_ai
       REDIS_URL: redis://redis:6379
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       JWT_SECRET: ${JWT_SECRET}
@@ -63,7 +63,7 @@ services:
       - ./server/uploads:/app/uploads
       - ./server/logs:/app/logs
     networks:
-      - marketmaster-network
+      - brandpulse-network
     restart: unless-stopped
 
   # Frontend
@@ -71,7 +71,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: marketmaster-frontend
+    container_name: brandpulse-frontend
     environment:
       VITE_API_URL: http://localhost:3001
       VITE_GEMINI_API_KEY: ${GEMINI_API_KEY}
@@ -80,13 +80,13 @@ services:
     depends_on:
       - backend
     networks:
-      - marketmaster-network
+      - brandpulse-network
     restart: unless-stopped
 
   # n8n Workflow Automation
   n8n:
     image: n8nio/n8n:latest
-    container_name: marketmaster-n8n
+    container_name: brandpulse-n8n
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=${N8N_USER:-admin}
@@ -100,8 +100,8 @@ services:
       - DB_POSTGRESDB_HOST=postgres
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_DATABASE=n8n
-      - DB_POSTGRESDB_USER=marketmaster
-      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD:-marketmaster_secure_password}
+      - DB_POSTGRESDB_USER=brandpulse
+      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD:-brandpulse_secure_password}
     ports:
       - "5678:5678"
     volumes:
@@ -111,13 +111,13 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - marketmaster-network
+      - brandpulse-network
     restart: unless-stopped
 
   # Nginx Reverse Proxy (optional - for production)
   nginx:
     image: nginx:alpine
-    container_name: marketmaster-nginx
+    container_name: brandpulse-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -128,7 +128,7 @@ services:
       - frontend
       - backend
     networks:
-      - marketmaster-network
+      - brandpulse-network
     restart: unless-stopped
     profiles:
       - production
@@ -142,7 +142,7 @@ volumes:
     driver: local
 
 networks:
-  marketmaster-network:
+  brandpulse-network:
     driver: bridge
 
 # Made with Bob

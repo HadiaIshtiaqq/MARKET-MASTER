@@ -3,6 +3,3 @@ dist/
 .env
 *.log
 data/*.db
-data/*.db-shm
-data/*.db-wal
-data/*.sqlite

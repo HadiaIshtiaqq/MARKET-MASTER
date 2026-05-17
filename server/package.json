@@ -1,7 +1,7 @@
 {
-  "name": "marketmaster-ai-server",
+  "name": "brandpulse-ai-server",
   "version": "1.0.0",
-  "description": "MarketMaster AI - Multi-tenant B2B Social Commerce Platform Backend",
+  "description": "BrandPulse AI - Multi-tenant B2B Social Commerce Platform Backend",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -16,7 +16,7 @@
     "multi-tenant",
     "automation"
   ],
-  "author": "MarketMaster AI Team",
+  "author": "BrandPulse AI Team",
   "license": "Apache-2.0",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",

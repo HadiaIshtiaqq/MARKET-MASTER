@@ -1,8 +1,8 @@
-# MarketMaster AI - Windows Setup Script
+# BrandPulse AI - Windows Setup Script
 # Run this script in PowerShell as Administrator
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  MarketMaster AI - Windows Setup" -ForegroundColor Cyan
+Write-Host "  BrandPulse AI - Windows Setup" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -12,7 +12,7 @@ try {
     $nodeVersion = node --version
     Write-Host "✓ Node.js is installed: $nodeVersion" -ForegroundColor Green
 } catch {
-    $host.ui.WriteErrorLine("✗ Node.js is not installed!")
+    Write-Host "✗ Node.js is not installed!" -ForegroundColor Red
     Write-Host "Please install Node.js from: https://nodejs.org/" -ForegroundColor Yellow
     Write-Host "Download the LTS version (18.x or higher)" -ForegroundColor Yellow
     exit 1
@@ -24,7 +24,7 @@ try {
     $npmVersion = npm --version
     Write-Host "✓ npm is installed: $npmVersion" -ForegroundColor Green
 } catch {
-    $host.ui.WriteErrorLine("✗ npm is not installed!")
+    Write-Host "✗ npm is not installed!" -ForegroundColor Red
     Write-Host "npm should come with Node.js. Please reinstall Node.js." -ForegroundColor Yellow
     exit 1
 }
@@ -39,7 +39,7 @@ Write-Host ""
 Write-Host "Installing frontend dependencies..." -ForegroundColor Yellow
 npm install
 if ($LASTEXITCODE -ne 0) {
-    $host.ui.WriteErrorLine("✗ Frontend dependency installation failed!")
+    Write-Host "✗ Frontend dependency installation failed!" -ForegroundColor Red
     exit 1
 }
 Write-Host "✓ Frontend dependencies installed successfully" -ForegroundColor Green
@@ -51,7 +51,7 @@ Write-Host "Installing backend dependencies..." -ForegroundColor Yellow
 Set-Location server
 npm install
 if ($LASTEXITCODE -ne 0) {
-    $host.ui.WriteErrorLine("✗ Backend dependency installation failed!")
+    Write-Host "✗ Backend dependency installation failed!" -ForegroundColor Red
     Set-Location ..
     exit 1
 }
@@ -91,7 +91,7 @@ Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host "1. Edit .env and server\.env files with your API keys" -ForegroundColor White
 Write-Host "2. Install PostgreSQL and Redis (or use Docker)" -ForegroundColor White
-Write-Host "3. Run the database schema: psql -d marketmaster_ai -f database\schema.sql" -ForegroundColor White
+Write-Host "3. Run the database schema: psql -d brandpulse_ai -f database\schema.sql" -ForegroundColor White
 Write-Host "4. Start the development servers:" -ForegroundColor White
 Write-Host "   - Frontend: npm run dev" -ForegroundColor Cyan
 Write-Host "   - Backend: cd server; npm run dev" -ForegroundColor Cyan
