@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-MarketMaster AI is a **multi-agent B2B SaaS platform** built for the IBM Hackathon. It bridges the gap between physical inventory and digital commerce for SMEs in emerging markets (initially Pakistan), using IBM WatsonX Granite models, vision-to-code document extraction, and autonomous agent orchestration.
+MarketMaster AI is a **multi-agent B2B SaaS platform**. It bridges the gap between physical inventory and digital commerce for SMEs in emerging markets (initially Pakistan), using IBM WatsonX Granite models, vision-to-code document extraction, and autonomous agent orchestration.
 
 ## Technology Stack
 
@@ -14,7 +14,7 @@ MarketMaster AI is a **multi-agent B2B SaaS platform** built for the IBM Hackath
 | Automation | n8n workflows |
 | Deployment | Docker, Docker Compose, optional Nginx |
 
-## Hackathon Narrative (Elevator Pitch)
+## Product Narrative (Elevator Pitch)
 
 > 40 million SMEs in emerging markets lose 30% of revenue to stockouts and poor customer retention. MarketMaster AI digitizes physical inventory in seconds using **IBM Granite Vision** (snap a photo of a delivery challan → structured database rows), predicts stockouts with **IBM WatsonX Predictions**, and autonomously re-engages at-risk customers via orchestrated AI agents — all in Urdu/English mix. Built with IBM Bob (Vision-to-Code) and powered by **IBM Granite**.
 
@@ -31,10 +31,7 @@ MarketMaster AI is a **multi-agent B2B SaaS platform** built for the IBM Hackath
 
 ```bash
 # Start everything (Windows)
-start-hackathon.bat
-
-# Start everything (Unix/Mac)
-./start-hackathon.sh
+start-dev.bat
 
 # Dev (frontend)
 npm run dev
@@ -59,7 +56,7 @@ docker-compose up --build
 - `server/src/services/ibmBob.service.ts` — Vision-to-Code & NL2SQL.
 - `server/src/services/agentOrchestrator.service.ts` — Multi-agent ReAct loop with tool calling.
 - `server/src/services/database.service.ts` — Seeded SQLite DB with realistic PKR business data.
-- `src/components/MarketMasterApp.tsx` — Main hackathon demo UI (4 tabs).
+- `src/components/MarketMasterApp.tsx` — Main product demo UI (4 tabs).
 - `JUDGE_WALKTHROUGH.md` — Step-by-step demo script.
 
 ## IBM Technology Integration Map
@@ -73,14 +70,14 @@ docker-compose up --build
 
 ## Known Limitations
 
-- SQLite is used for hackathon simplicity; production would migrate to **IBM Db2** or PostgreSQL.
+- SQLite is used for local development simplicity; production would migrate to **IBM Db2** or PostgreSQL.
 - Social media posting is mocked (no real OAuth credentials required for demo).
 - n8n workflows are templates; production workflows would run on **IBM Cloud Functions** or n8n on IBM Cloud.
 
 ## Environment Variables
 
 See `.env.example` (frontend) and `server/.env.example` (backend). The backend auto-detects:
-1. `WATSONX_API_KEY` + `WATSONX_PROJECT_ID` → IBM Granite (preferred for IBM hackathons)
+1. `WATSONX_API_KEY` + `WATSONX_PROJECT_ID` → IBM Granite (preferred for Granite setups)
 2. `GROQ_API_KEY` → Groq Llama (free, fast)
 3. `GEMINI_API_KEY` → Google Gemini (fallback)
 

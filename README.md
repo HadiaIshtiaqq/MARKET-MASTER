@@ -1,4 +1,4 @@
-# MarketMaster AI — IBM Hackathon Submission
+# MarketMaster AI — Powered by IBM Granite
 
 > **Multi-agent B2B SaaS platform powered by IBM WatsonX Granite.**
 > Digitize physical inventory with a photo. Predict stockouts. Re-engage customers autonomously.
@@ -21,11 +21,11 @@ cp server/.env.example server/.env
 # 3. Start
 npm run dev          # Frontend (localhost:3000)
 cd server && npm run dev   # Backend (localhost:3001)
-# Or use: start-hackathon.bat  /  ./start-hackathon.sh
+# Or use: start-dev.bat
 ```
 
 **Recommended:** Add `GROQ_API_KEY` (free, no credit card) for the fastest demo experience.
-**IBM Hackathon Optimized:** Add `WATSONX_API_KEY` + `WATSONX_PROJECT_ID` for full IBM Granite integration.
+**IBM Granite Optimized:** Add `WATSONX_API_KEY` + `WATSONX_PROJECT_ID` for full IBM Granite integration.
 
 ---
 
@@ -85,9 +85,9 @@ cd server && npm run dev   # Backend (localhost:3001)
 | `server/src/services/ibmBob.service.ts` | Vision-to-Code & NL2SQL engine |
 | `server/src/services/agentOrchestrator.service.ts` | Multi-agent ReAct loop with tool calling |
 | `server/src/services/database.service.ts` | Seeded SQLite with realistic PKR business data |
-| `src/components/MarketMasterApp.tsx` | Main hackathon demo UI |
+| `src/components/MarketMasterApp.tsx` | Main product demo UI |
 | `JUDGE_WALKTHROUGH.md` | 5-minute step-by-step demo script |
-| `PITCH.md` | Full hackathon pitch narrative |
+| `PITCH.md` | Full product pitch narrative |
 
 ---
 

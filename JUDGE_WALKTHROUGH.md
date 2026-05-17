@@ -1,7 +1,7 @@
 # 🎯 Judge Walkthrough — MarketMaster AI
 
 **Target Duration:** 5 minutes  
-**Judge Persona:** IBM Hackathon judge evaluating technical depth, IBM tech usage, and real-world impact.
+**Judge Persona:** Evaluator looking at technical depth, IBM tech usage, and real-world impact.
 
 ---
 
@@ -17,7 +17,7 @@ cd server && npm run dev
 npm run dev
 ```
 
-Or simply double-click `start-hackathon.bat` (Windows) or `./start-hackathon.sh` (Mac/Linux).
+Or simply double-click `start-dev.bat` (Windows).
 
 Navigate to **http://localhost:3000**.
 

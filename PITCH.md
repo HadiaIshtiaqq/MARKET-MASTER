@@ -1,6 +1,6 @@
 # 🏆 Pitch — MarketMaster AI
 
-**Hackathon:** IBM Hackathon  
+**Technology Focus:** IBM WatsonX & Granite  
 **Team:** MarketMaster AI  
 **Solution:** Autonomous AI-Powered Inventory & Customer Intelligence for Emerging Market SMEs
 
