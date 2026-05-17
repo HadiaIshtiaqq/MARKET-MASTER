@@ -59,6 +59,19 @@ app.use('/api/ibm-bob', ibmBobRoutes);
 // Error handling
 app.use(errorHandler);
 
+// Serve static assets in production
+import path from 'path';
+const distPath = path.join(__dirname, '../../dist');
+app.use(express.static(distPath));
+
+// Fallback to React index.html for all client-side routing
+app.get('*', (req: Request, res: Response, next: NextFunction) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 // 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Route not found' });
