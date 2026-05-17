@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo   BrandPulse AI - Installing Dependencies
+echo   MarketMaster AI - Installing Dependencies
 echo ========================================
 echo.
 

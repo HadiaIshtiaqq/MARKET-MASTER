@@ -1,6 +1,6 @@
-# 🪟 BrandPulse AI - Windows Setup Guide
+# 🪟 MarketMaster AI - Windows Setup Guide
 
-Complete step-by-step guide for setting up BrandPulse AI on Windows.
+Complete step-by-step guide for setting up MarketMaster AI on Windows.
 
 ---
 
@@ -89,7 +89,7 @@ This will:
    ```env
    PORT=3001
    NODE_ENV=development
-   DATABASE_URL=postgresql://brandpulse:password@localhost:5432/brandpulse_ai
+   DATABASE_URL=postgresql://marketmaster:password@localhost:5432/marketmaster_ai
    GEMINI_API_KEY=your_actual_gemini_api_key_here
    JWT_SECRET=your_random_secret_key_here
    ```
@@ -105,13 +105,13 @@ docker-compose up -d postgres redis
 ```powershell
 # Create database
 psql -U postgres
-CREATE DATABASE brandpulse_ai;
-CREATE USER brandpulse WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE brandpulse_ai TO brandpulse;
+CREATE DATABASE marketmaster_ai;
+CREATE USER marketmaster WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE marketmaster_ai TO marketmaster;
 \q
 
 # Run schema
-psql -U brandpulse -d brandpulse_ai -f database\schema.sql
+psql -U marketmaster -d marketmaster_ai -f database\schema.sql
 ```
 
 ### Step 4: Start Development Servers
@@ -260,7 +260,7 @@ taskkill /PID <PID> /F
 
 2. Verify connection string in `server\.env`:
    ```env
-   DATABASE_URL=postgresql://username:password@localhost:5432/brandpulse_ai
+   DATABASE_URL=postgresql://username:password@localhost:5432/marketmaster_ai
    ```
 
 ### Issue: "Redis connection failed"
@@ -316,7 +316,7 @@ MarketMasterAI/
 
 1. **Test the Installation:**
    - Open http://localhost:3000
-   - You should see the BrandPulse AI interface
+   - You should see the MarketMaster AI interface
 
 2. **Register a Vendor Account:**
    - Click "Register" or use API: `POST /api/auth/register`
@@ -346,8 +346,8 @@ If you encounter issues:
 
 1. Check this troubleshooting guide
 2. Review logs in `server/logs/`
-3. Check GitHub Issues: https://github.com/your-org/brandpulse-ai/issues
-4. Contact support: support@brandpulse.ai
+3. Check GitHub Issues: https://github.com/your-org/marketmaster-ai/issues
+4. Contact support: support@marketmaster.ai
 
 ---
 

@@ -1,6 +1,6 @@
-# BrandPulse AI - n8n Workflow Integration
+# MarketMaster AI - n8n Workflow Integration
 
-This directory contains n8n workflow templates for automating various aspects of the BrandPulse AI platform.
+This directory contains n8n workflow templates for automating various aspects of the MarketMaster AI platform.
 
 ## Overview
 
@@ -130,7 +130,7 @@ n8n is used to orchestrate complex automation workflows that connect:
 
 ### Prerequisites
 1. n8n instance (self-hosted or cloud)
-2. BrandPulse AI backend API running
+2. MarketMaster AI backend API running
 3. Database connection configured
 4. Social media API credentials
 
@@ -173,7 +173,7 @@ POST /webhook/stock-alert
 
 ### Custom Nodes
 
-BrandPulse AI provides custom n8n nodes:
+MarketMaster AI provides custom n8n nodes:
 
 1. **IBM Bob Node** - Vision-to-Code processing
 2. **AI Tag Scanner Node** - Product image analysis
@@ -182,7 +182,7 @@ BrandPulse AI provides custom n8n nodes:
 
 Install via:
 ```bash
-npm install @brandpulse/n8n-nodes-brandpulse
+npm install @marketmaster/n8n-nodes-marketmaster
 ```
 
 ## Workflow Customization
@@ -259,9 +259,9 @@ if (post.estimatedEngagement === 'viral') {
 ## Support
 
 For issues or questions:
-- GitHub: https://github.com/brandpulse-ai/n8n-workflows
-- Documentation: https://docs.brandpulse.ai/n8n
-- Community: https://community.brandpulse.ai
+- GitHub: https://github.com/marketmaster-ai/n8n-workflows
+- Documentation: https://docs.marketmaster.ai/n8n
+- Community: https://community.marketmaster.ai
 
 ## License
 
